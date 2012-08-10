@@ -100,11 +100,11 @@ if(isset($_POST['saving'])) {
 	}
 	
 	if($table_rows['sort'] == '1' && !$has_id && $_POST['save_and'] != 'duplicate'){
-		// Get the next highest sort int
-		$sth = $dbh->query("SELECT max(sort) AS max_sort FROM `$table` ");
-		$next_sort = ($sort = $sth->fetch())? ($sort["max_sort"]+1) : 1;
+		// Get the lowest sort int and update the others 		
+		$save_array[] = "`sort` = 1";
+		$sth = $dbh->prepare("UPDATE $table SET sort = sort + 1");
+		$sth->execute();
 		
-		$save_array[] = "`sort` = '$next_sort'";
 	} elseif($table_rows['sort'] == '1' && $has_id) {
 		$save_array[] = "`sort` = '".$_POST['sort']."'";
 	}
